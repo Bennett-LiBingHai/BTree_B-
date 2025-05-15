@@ -86,6 +86,7 @@ int FindIndex(BNode* node, int key)
 //B树查找，返回节点,key值在返回节点的区间中，可能不存在这个key值
 BNode* Search_BT(BTree* tree, int key)
 {
+	assert(tree->root&&key>0);
 	BNode* curr = tree->root;
 	//BNode* parent = tree->root;
 	int index = 0;
@@ -228,7 +229,7 @@ void InOrder_Traversal(BNode* root)
 	InOrder_Traversal(root->children[i-1]);
 }
 
-//B树删除,成功返回1，失败返回0
+//B树删除,成功返回key，失败返回0
 int Delete_BT(BTree* tree, int key)
 {
 	assert(tree&&key>0);
@@ -347,6 +348,7 @@ int Delete_BT(BTree* tree, int key)
 			
 		}
 	}
+	tree->size--;
 	return key;
 }
 
@@ -448,4 +450,76 @@ void CombineNode(BTree* tree,BNode* LeftNode, BNode* RightNode)
 		RightNode->parent = NULL;
 		delete parent;
 	}
+}
+
+//清空节点(父节点不变),可能与子节点断连，导致内存泄漏
+void ClearNode(BNode* node)
+{
+	assert(node);
+	for (int i = 0; i < node->childNum; ++i)
+	{
+		node->children[i] = NULL;
+	}
+	node->childNum = 0;
+	for (int i = 1; i <= node->keyNum; ++i)
+	{
+		node->keys[i] = -1;
+	}
+	node->keyNum = 0;
+}
+
+//清空树（没有初始化不能清空）
+void Clear(BTree* tree)
+{
+	assert(tree&& tree->root);
+	std::queue<BNode*> q;
+	for (int i = 0; i < tree->root->childNum; ++i)
+	{
+		q.push(tree->root->children[i]);
+	}
+	while (!q.empty())
+	{
+		BNode* temp = q.front();
+		q.pop();
+		for (int i = 0; i < temp->childNum; ++i)
+		{
+			q.push(temp->children[i]);
+		}
+		free(temp);
+	}
+	ClearNode(tree->root);
+	tree->size = 0;
+}
+
+//销毁树
+void Destroy(BTree* tree)
+{
+	assert(tree);
+	if (tree->root)
+	{
+		std::queue<BNode*> q;
+		q.push(tree->root);
+		while (!q.empty())
+		{
+			BNode* temp = q.front();
+			q.pop();
+			for (int i = 0; i < temp->childNum; ++i)
+			{
+				q.push(temp->children[i]);
+			}
+			free(temp);
+		}
+	}
+	tree->size = 0;
+	tree->root = NULL;
+}
+
+//B树查找,成功返回key,失败返回0
+int Find_BT(BTree* tree, int key)
+{
+	BNode* node=Search_BT(tree,key);
+	int i = 1;
+	for (; i <= node->keyNum && node->keys[i] != key; ++i);
+	if (i > node->keyNum)return 0;
+	else return key;
 }

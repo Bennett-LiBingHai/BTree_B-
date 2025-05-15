@@ -2,6 +2,7 @@
 #include<stdio.h>
 #include<stdlib.h>
 #include<assert.h>
+#include<queue>
 
 #define LEVEL 5//阶数（分支数）
 #define KEYS_MIN ((LEVEL+1)/2-1)//最少关键字数量
@@ -24,8 +25,7 @@ typedef struct BTree
 	int size;//数据个数（关键字数量）
 }BTree;
 
-//初始化树
-void InitBTree(BTree* tree);
+//插入相关函数
 //创建节点
 BNode* CreatNode();
 //创建节点,插入第一个关键字
@@ -36,13 +36,8 @@ int FindIndex(BNode* node, int key);
 BNode* Search_BT(BTree* tree, int key);
 //关键字插入，顺便完成分裂,插入失败返回0，成功返回key
 int Insert_Key(BTree* tree, BNode* node, int key);
-//B树节点插入，插入失败返回0，成功返回key
-int Insert_BT(BTree* tree,int key);
-//B树中序遍历
-void InOrder_Traversal(BNode* root);
 
-//B树删除,成功返回1，失败返回0
-int Delete_BT(BTree* tree, int key);
+//删除相关函数
 //删除key(子树也会删除，请提前合并子树并挂到key的右边)
 void Erase_Key(BNode* curr, int index);
 //判断是否是叶节点
@@ -51,4 +46,23 @@ bool IsLeaf(BNode* curr);
 void CombineNode(BTree* tree,BNode* LeftNode, BNode* RightNode);
 //寻找父key位置(大于其所有key),返回索引
 int FindIndex_Parent(BNode* lchild);
+//清空节点
+void ClearNode(BNode* node);
+
+
+//常用操作
+//初始化树
+void InitBTree(BTree* tree);
+//B树节点插入，插入失败返回0，成功返回key
+int Insert_BT(BTree* tree, int key);
+//B树中序遍历
+void InOrder_Traversal(BNode* root);
+//B树删除,成功返回key，失败返回0
+int Delete_BT(BTree* tree, int key);
+//B树查找,成功返回key,失败返回0
+int Find_BT(BTree* tree,int key);
+//清空树
+void Clear(BTree* tree);
+//销毁树
+void Destroy(BTree* tree);
 

@@ -26,18 +26,16 @@ void test02()
 	}
 	printf("\n");
 	InOrder_Traversal(t.root);
-	//printf("%d\n", Delete_BT(&t, 11));
-	//printf("%d\n", Delete_BT(&t, 8));
-	//printf("%d\n", Delete_BT(&t, 5));
+	printf("\n");
+	//for (int i = 2; i <= 100; ++i)
+	//{
+	//	printf("%d ", Delete_BT(&t, i));
+	//}
+	//printf("\n");
 	//InOrder_Traversal(t.root);
-	printf("\n");
-	for (int i = 2; i <= 100; ++i)
-	{
-		printf("%d ", Delete_BT(&t, i));
-	}
-	printf("\n");
-	InOrder_Traversal(t.root);
-
+	printf("%d ", Find_BT(&t, 10));
+	printf("%d ", Find_BT(&t, 101));
+	Clear(&t);
 }
 
 void test03()
